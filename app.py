@@ -97,7 +97,13 @@ def generate_puzzle():
 def generate():
     puzzle, numbers = generate_puzzle()
     return jsonify({"puzzle": puzzle, "numbers": numbers})
+    
+from flask import send_from_directory
 
+@app.route('/')
+def serve_index():
+    return send_from_directory('static', 'index.html')
+    
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))  # Use Render’s dynamic port
     app.run(host='0.0.0.0', port=port, debug=True)
