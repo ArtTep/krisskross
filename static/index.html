@@ -50,25 +50,17 @@
                     let td = document.createElement("td");
 
                     if (cell === "*") {
-                        td.style.backgroundColor = "lightgray";  // Show placeholder
-
-                        // Create dropdown menu for numbers
-                        let select = document.createElement("select");
-                        let emptyOption = document.createElement("option");
-                        emptyOption.value = "";
-                        emptyOption.textContent = " ";
-                        select.appendChild(emptyOption);
-
-                        // Add numbers to dropdown
-                        numberListArray.forEach(num => {
-                            let option = document.createElement("option");
-                            option.value = num;
-                            option.textContent = num;
-                            select.appendChild(option);
-                        });
-
-                        td.appendChild(select);
-                    }
+                        let input = document.createElement("input");
+                        input.type = "text";
+                        input.maxLength = 1;  // Only allow one number per box
+                        input.style.width = "100%";
+                        input.style.height = "100%";
+                        input.style.textAlign = "center";
+                        input.style.border = "none";
+                        input.style.backgroundColor = "lightgray";
+                        input.style.fontSize = "16px";
+                        td.appendChild(input);
+                    } 
 
                     tr.appendChild(td);
                 }
@@ -88,6 +80,7 @@
 
     generatePuzzle();  // Generate on page load
 </script>
+
 
 </body>
 </html>
