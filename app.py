@@ -1,3 +1,4 @@
+import os
 import random
 from flask import Flask, jsonify
 from flask_cors import CORS
@@ -96,8 +97,6 @@ def generate_puzzle():
 def generate():
     puzzle, numbers = generate_puzzle()
     return jsonify({"puzzle": puzzle, "numbers": numbers})
-
-import os
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))  # Use Render’s dynamic port
