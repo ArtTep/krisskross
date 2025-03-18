@@ -1,1 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Kriss Kross</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .container { display: flex; justify-content: center; align-items: flex-start; gap: 40px; }
+        table { border-collapse: collapse; }
+        td { width: 30px; height: 30px; text-align: center; border: 1px solid black; }
+        .numbers-list { text-align: left; }
+        .numbers-list h3 { margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Number Kriss Kross Generator</h1>
+    
+    <div class="container">
+        <table id="puzzleGrid"></table>
+        <div class="numbers-list">
+            <h3>Numbers</h3>
+            <ul id="numberList"></ul>
+        </div>
+    </div>
+
+    <br>
+    <button onclick="generatePuzzle()">Generate New Puzzle</button>
+
+    <script>
+        async function generatePuzzle() {
+            try {
+                const response = await fetch('/generate');  // Use relative URL
+                if (!response.ok) {
+                    throw new Error("Failed to fetch puzzle.");
+                }
+                
+                const data = await response.json();
+                const puzzleGrid = data.puzzle;
+                const numberListArray = data.numbers;
+
+                let table = document.getElementById("puzzleGrid");
+                let numberList = document.getElementById("numberList");
+                table.innerHTML = "";
+                numberList.innerHTML = "";
+
+                for (let row of puzzleGrid) {
+                    let tr = document.createElement("tr");
+                    for (let cell of row) {
+                        let td = document.createElement("td");
+                        
+                        if (cell === "*") {
+                            td.style.backgroundColor = "lightgray";  // Show placeholder
+                        } else {
+                            td.textContent = "";  // Keep blank spaces
+                        }
+
+                        tr.appendChild(td);
+                    }
+                    table.appendChild(tr);
+                }
+
+                numberListArray.forEach(num => {
+                    let li = document.createElement("li");
+                    li.textContent = num;
+                    numberList.appendChild(li);
+                });
+            } catch (error) {
+                console.error("Error fetching puzzle:", error);
+                alert("Could not generate puzzle. Please try again later.");
+            }
+        }
+
+        generatePuzzle();  // Generate on page load
+    </script>
+</body>
+</html>
 
