@@ -18,22 +18,18 @@ def create_empty_grid(size):
     """ Create an empty crossword grid filled with spaces """
     return [[' ' for _ in range(size)] for _ in range(size)]
 
-def has_intersection(grid, num, row, col, direction):
+def has_intersection(grid, row, col, direction, length):
     """ Ensure every number intersects with at least one other """
-    length = len(num)
-    
     if direction == "H":
         return any(grid[row][col + i] == "*" for i in range(length))
-    
     if direction == "V":
         return any(grid[row + i][col] == "*" for i in range(length))
-    
     return False
 
 def is_valid_placement(grid, num, row, col, direction):
     """ Check if placement is valid with enforced crossword-style rules """
     length = len(num)
-    
+
     if direction == "H":
         if col + length > GRID_SIZE:
             return False  # Out of bounds
@@ -47,7 +43,7 @@ def is_valid_placement(grid, num, row, col, direction):
             return False
 
         # Must intersect or extend from an existing word
-        return has_intersection(grid, num, row, col, "H") or col == 0
+        return has_intersection(grid, row, col, "H", length) or col == 0
 
     elif direction == "V":
         if row + length > GRID_SIZE:
@@ -62,7 +58,7 @@ def is_valid_placement(grid, num, row, col, direction):
             return False
 
         # Must intersect or extend from an existing word
-        return has_intersection(grid, num, row, col, "V") or row == 0
+        return has_intersection(grid, row, col, "V", length) or row == 0
 
     return False
 
@@ -79,7 +75,7 @@ def place_number(grid, num):
         if is_valid_placement(grid, num, row, col, direction):
             for i in range(length):
                 if direction == "H":
-                    grid[row][col + i] = "*"  # Placeholder for number
+                    grid[row][col + i] = "*"  # Each digit spans a separate box
                 else:
                     grid[row + i][col] = "*"
             placed = True
@@ -95,7 +91,7 @@ def generate_puzzle():
     placed_numbers = []
 
     first_num = numbers.pop(0)
-    row, col = GRID_SIZE // 2, GRID_SIZE // 2
+    row, col = GRID_SIZE // 2, GRID_SIZE // 2  # Start near center
     place_number(grid, first_num)
     placed_numbers.append(first_num)
 
