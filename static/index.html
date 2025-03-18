@@ -27,52 +27,68 @@
     <br>
     <button onclick="generatePuzzle()">Generate New Puzzle</button>
 
-    <script>
-        async function generatePuzzle() {
-            try {
-                const response = await fetch('https://krisskross.onrender.com/generate');  // Use relative URL
-                if (!response.ok) {
-                    throw new Error("Failed to fetch puzzle.");
-                }
-                
-                const data = await response.json();
-                const puzzleGrid = data.puzzle;
-                const numberListArray = data.numbers;
-
-                let table = document.getElementById("puzzleGrid");
-                let numberList = document.getElementById("numberList");
-                table.innerHTML = "";
-                numberList.innerHTML = "";
-
-                for (let row of puzzleGrid) {
-                    let tr = document.createElement("tr");
-                    for (let cell of row) {
-                        let td = document.createElement("td");
-                        
-                        if (cell === "*") {
-                            td.style.backgroundColor = "lightgray";  // Show placeholder
-                        } else {
-                            td.textContent = "";  // Keep blank spaces
-                        }
-
-                        tr.appendChild(td);
-                    }
-                    table.appendChild(tr);
-                }
-
-                numberListArray.forEach(num => {
-                    let li = document.createElement("li");
-                    li.textContent = num;
-                    numberList.appendChild(li);
-                });
-            } catch (error) {
-                console.error("Error fetching puzzle:", error);
-                alert("Could not generate puzzle. Please try again later.");
+<script>
+    async function generatePuzzle() {
+        try {
+            const response = await fetch('https://krisskross.onrender.com/generate');
+            if (!response.ok) {
+                throw new Error("Failed to fetch puzzle.");
             }
-        }
+            
+            const data = await response.json();
+            const puzzleGrid = data.puzzle;
+            const numberListArray = data.numbers;
 
-        generatePuzzle();  // Generate on page load
-    </script>
+            let table = document.getElementById("puzzleGrid");
+            let numberList = document.getElementById("numberList");
+            table.innerHTML = "";
+            numberList.innerHTML = "";
+
+            for (let row of puzzleGrid) {
+                let tr = document.createElement("tr");
+                for (let cell of row) {
+                    let td = document.createElement("td");
+
+                    if (cell === "*") {
+                        td.style.backgroundColor = "lightgray";  // Show placeholder
+
+                        // Create dropdown menu for numbers
+                        let select = document.createElement("select");
+                        let emptyOption = document.createElement("option");
+                        emptyOption.value = "";
+                        emptyOption.textContent = " ";
+                        select.appendChild(emptyOption);
+
+                        // Add numbers to dropdown
+                        numberListArray.forEach(num => {
+                            let option = document.createElement("option");
+                            option.value = num;
+                            option.textContent = num;
+                            select.appendChild(option);
+                        });
+
+                        td.appendChild(select);
+                    }
+
+                    tr.appendChild(td);
+                }
+                table.appendChild(tr);
+            }
+
+            numberListArray.forEach(num => {
+                let li = document.createElement("li");
+                li.textContent = num;
+                numberList.appendChild(li);
+            });
+        } catch (error) {
+            console.error("Error fetching puzzle:", error);
+            alert("Could not generate puzzle. Please try again later.");
+        }
+    }
+
+    generatePuzzle();  // Generate on page load
+</script>
+
 </body>
 </html>
 
