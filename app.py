@@ -97,5 +97,8 @@ def generate():
     puzzle, numbers = generate_puzzle()
     return jsonify({"puzzle": puzzle, "numbers": numbers})
 
+import os
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get("PORT", 10000))  # Use Render’s dynamic port
+    app.run(host='0.0.0.0', port=port, debug=True)
