@@ -50,26 +50,39 @@ def can_place_number(grid, num, row, col, direction):
     return False
 
 def place_number(grid, num):
-    """ Try placing a number in the grid ensuring some intersections """
+    """ Try placing a number in the grid ensuring at least one intersection """
     placed = False
     attempts = 0
+    length = len(num)
 
     while not placed and attempts < MAX_ATTEMPTS:
         row, col = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
         direction = random.choice(["H", "V"])
+        has_intersection = False
 
         if can_place_number(grid, num, row, col, direction):
-            length = len(num)
+            # Check if the number would intersect another placed number
             for i in range(length):
                 if direction == "H":
-                    grid[row][col + i] = "*"  # Placeholder for number
+                    if grid[row][col + i] == "*":  # Intersection found
+                        has_intersection = True
                 else:
-                    grid[row + i][col] = "*"
-            placed = True
-
+                    if grid[row + i][col] == "*":  # Intersection found
+                        has_intersection = True
+            
+            # Ensure at least one intersection
+            if has_intersection or attempts > MAX_ATTEMPTS // 2:
+                for i in range(length):
+                    if direction == "H":
+                        grid[row][col + i] = "*"  # Place number
+                    else:
+                        grid[row + i][col] = "*"
+                placed = True
+        
         attempts += 1
 
     return placed
+
 
 def generate_puzzle():
     """ Generate a crossword-style number puzzle with proper intersections """
