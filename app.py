@@ -56,33 +56,46 @@ def place_number(grid, num):
     length = len(num)
 
     while not placed and attempts < MAX_ATTEMPTS:
-        row, col = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
+        row, col = random.randint(1, GRID_SIZE - 2), random.randint(1, GRID_SIZE - 2)
         direction = random.choice(["H", "V"])
 
         if direction == "H":
-            if col + length > GRID_SIZE:
+            if col + length >= GRID_SIZE - 1:
                 attempts += 1
                 continue
 
-            # Allow placement if it intersects or is near another number
-            has_intersection = any(grid[row][c] == "*" for c in range(col, col + length))
-
-            if not has_intersection and (col == 0 or col + length == GRID_SIZE):
+            # Ensure spacing by checking adjacent rows
+            if any(grid[row][c] == "*" for c in range(col, col + length)) or \
+               any(grid[row - 1][c] == "*" for c in range(col, col + length) if row > 0) or \
+               any(grid[row + 1][c] == "*" for c in range(col, col + length) if row < GRID_SIZE - 1):
                 attempts += 1
-                continue  # Ensure at least one intersection or boundary start
+                continue
+
+            # Ensure at least one intersection
+            has_intersection = any(grid[row][c] == "*" for c in range(col, col + length))
+            if not has_intersection:
+                attempts += 1
+                continue
 
             for i in range(length):
                 grid[row][col + i] = "*"
             placed = True
 
         elif direction == "V":
-            if row + length > GRID_SIZE:
+            if row + length >= GRID_SIZE - 1:
                 attempts += 1
                 continue
 
-            has_intersection = any(grid[r][col] == "*" for r in range(row, row + length))
+            # Ensure spacing by checking adjacent columns
+            if any(grid[r][col] == "*" for r in range(row, row + length)) or \
+               any(grid[r][col - 1] == "*" for r in range(row, row + length) if col > 0) or \
+               any(grid[r][col + 1] == "*" for r in range(row, row + length) if col < GRID_SIZE - 1):
+                attempts += 1
+                continue
 
-            if not has_intersection and (row == 0 or row + length == GRID_SIZE):
+            # Ensure at least one intersection
+            has_intersection = any(grid[r][col] == "*" for r in range(row, row + length))
+            if not has_intersection:
                 attempts += 1
                 continue
 
