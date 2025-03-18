@@ -50,30 +50,31 @@ def can_place_number(grid, num, row, col, direction):
     return False
 
 def place_number(grid, num):
-    """ Try placing a number ensuring proper intersections and avoiding direct stacking """
+    """ Try placing a number ensuring some intersections and avoiding direct stacking """
     placed = False
     attempts = 0
     length = len(num)
 
     while not placed and attempts < MAX_ATTEMPTS:
-        row, col = random.randint(1, GRID_SIZE - 2), random.randint(1, GRID_SIZE - 2)
+        row, col = random.randint(1, GRID_SIZE - length - 1), random.randint(1, GRID_SIZE - length - 1)
         direction = random.choice(["H", "V"])
+        has_intersection = False
 
         if direction == "H":
-            if col + length >= GRID_SIZE - 1:
+            if col + length > GRID_SIZE:
                 attempts += 1
                 continue
 
-            # Ensure spacing by checking adjacent rows
+            # Ensure spacing by checking above and below
             if any(grid[row][c] == "*" for c in range(col, col + length)) or \
                any(grid[row - 1][c] == "*" for c in range(col, col + length) if row > 0) or \
                any(grid[row + 1][c] == "*" for c in range(col, col + length) if row < GRID_SIZE - 1):
                 attempts += 1
                 continue
 
-            # Ensure at least one intersection
+            # Allow some numbers to be independent (not force every one to intersect)
             has_intersection = any(grid[row][c] == "*" for c in range(col, col + length))
-            if not has_intersection:
+            if not has_intersection and random.random() > 0.4:  # 60% chance to require intersection
                 attempts += 1
                 continue
 
@@ -82,20 +83,20 @@ def place_number(grid, num):
             placed = True
 
         elif direction == "V":
-            if row + length >= GRID_SIZE - 1:
+            if row + length > GRID_SIZE:
                 attempts += 1
                 continue
 
-            # Ensure spacing by checking adjacent columns
+            # Ensure spacing by checking left and right
             if any(grid[r][col] == "*" for r in range(row, row + length)) or \
                any(grid[r][col - 1] == "*" for r in range(row, row + length) if col > 0) or \
                any(grid[r][col + 1] == "*" for r in range(row, row + length) if col < GRID_SIZE - 1):
                 attempts += 1
                 continue
 
-            # Ensure at least one intersection
+            # Allow some independent numbers
             has_intersection = any(grid[r][col] == "*" for r in range(row, row + length))
-            if not has_intersection:
+            if not has_intersection and random.random() > 0.4:  # 60% chance to require intersection
                 attempts += 1
                 continue
 
